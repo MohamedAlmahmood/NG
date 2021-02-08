@@ -38,3 +38,7 @@ input[type="text"]{
     padding: 5%;
     box-shadow: gainsboro;
   }
+
+  .tasksInput{
+    margin-left: 8%;
+  }

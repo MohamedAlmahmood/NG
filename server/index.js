@@ -46,3 +46,21 @@ app.get('/showBossTasks', (req,res)=>{
         }
     )
 })
+
+app.post('/addEmployeeTask', (req,res)=>{
+    const EmployeeName= req.body.EmployeeName;
+    const EmployeeInput= req.body.EmployeeInput;
+    const EmployeeTasksRequired= req.body.EmployeeTasksRequired;
+    const EmployeeTasksCompleted= req.body.EmployeeTasksCompleted;
+    
+    db.query(
+        "INSERT INTO tasks.employeetable (employeeName, employeeTask, tasksReq, tasksLeft) VALUES (?,?,?,?)",
+        [EmployeeName, EmployeeInput, EmployeeTasksRequired, EmployeeTasksCompleted], 
+        (err, result)=>{
+            if (err){
+                console.log(err)
+            }else{
+                res.send("values inserted")}
+        }
+    )
+})
