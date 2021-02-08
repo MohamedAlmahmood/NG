@@ -1,10 +1,12 @@
 import './App.css';
 import {useState} from "react";
 import Axios from 'axios';
+import * as math from 'mathjs';
 import { 
   Input, 
   Button
 } from 'semantic-ui-react'
+import { evaluate } from 'mathjs';
 
 function App() {
   const [BossName, setBossName] = useState("");
@@ -65,6 +67,9 @@ function App() {
   const calculate = (tasksReq, tasksLeft)=>{
     console.log(tasksReq);
     console.log(tasksLeft);
+    setMathResult( evaluate('(100 / {tasksReq})*{tasksLeft}' ) )
+    console.log(mathResult);
+
     //let division = 100/tasksReq;
     //let result = division*tasksLeft;
     //console.log('the result is', result);
