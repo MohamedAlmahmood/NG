@@ -64,3 +64,15 @@ app.post('/addEmployeeTask', (req,res)=>{
         }
     )
 })
+
+app.get('/showEmployeeTasks', (req,res)=>{
+    db.query(
+        "SELECT * FROM tasks.employeetable", (err, result)=>{
+            if (err){
+                console.log(err)
+            }else {
+                res.send(result);
+            }
+        }
+    )
+})

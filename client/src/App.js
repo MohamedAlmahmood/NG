@@ -19,6 +19,8 @@ function App() {
   const [EmployeeTasksCompleted, setEmployeeTasksCompleted] = useState(0);
   const [EmployeeInputsList, setEmployeeInputsList] = useState([]);
 
+  const [mathResult, setMathResult] = useState(0);
+
 
   const addBossTask = ()=>{
     Axios.post('http://localhost:3001/addBossTask', {
@@ -55,7 +57,21 @@ function App() {
   }
 
   const showEmployeeTask = ()=>{
-    
+    Axios.get('http://localhost:3001/showEmployeeTasks').then((response)=>{
+      setEmployeeInputsList(response.data);
+    })
+  }
+
+  const calculate = (tasksReq, tasksLeft)=>{
+    console.log(tasksReq);
+    console.log(tasksLeft);
+    //let division = 100/tasksReq;
+    //let result = division*tasksLeft;
+    //console.log('the result is', result);
+    //const setMathResult = result;
+    //return(
+      //mathResult
+    //)
   }
 
 
@@ -86,7 +102,16 @@ function App() {
           <Input placeholder='Tasks Completed' onChange={ (event)=> {setEmployeeTasksCompleted(event.target.value)} }/>
         </div>
         <Button content='Submit' primary onClick={addEmployeeTask}/>
-        <Button content='Show All' secondary />
+        <Button content='Show All' onClick={showEmployeeTask}secondary /> 
+        {EmployeeInputsList.map((val,key)=>{
+          return(
+            <div className="showBossTasks">
+              <h1>By: {val.employeeName}</h1>
+              <p1>{val.employeeTask}</p1>
+              <p1>{calculate(val.tasksReq, val.tasksLeft)}</p1>
+            </div>
+          )
+        })}
       </div>
 
     </div>
