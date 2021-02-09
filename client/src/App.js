@@ -1,12 +1,13 @@
 import './App.css';
 import {useState} from "react";
 import Axios from 'axios';
-import * as math from 'mathjs';
 import { 
   Input, 
-  Button
+  Button,
+  Dropdown,
+  Menu,
 } from 'semantic-ui-react'
-import { evaluate } from 'mathjs';
+
 
 function App() {
   const [BossName, setBossName] = useState("");
@@ -21,13 +22,14 @@ function App() {
   const [EmployeeTasksCompleted, setEmployeeTasksCompleted] = useState(0);
   const [EmployeeInputsList, setEmployeeInputsList] = useState([]);
 
-  const [mathResult, setMathResult] = useState(0);
-
+  const [Priority, setPriority] = useState("");
+  
 
   const addBossTask = ()=>{
     Axios.post('http://localhost:3001/addBossTask', {
       BossName: BossName,
       BossInput: BossInput,
+      Priority: Priority,
     }).then( ()=>{
       setBossInputsList([...BossInputsList, {
         bossName: BossName,
@@ -64,32 +66,38 @@ function App() {
     })
   }
 
-  const calculate = (tasksReq, tasksLeft)=>{
-    console.log(tasksReq);
-    console.log(tasksLeft);
-    setMathResult( evaluate('(100 / {tasksReq})*{tasksLeft}' ) )
-    console.log(mathResult);
+  const options = [
+    { key: 1, text: 'Low', value: 'low' },
+    { key: 2, text: 'Medium', value: 'medium' },
+    { key: 3, text: 'High', value: 'high' },
+  ]
 
-    //let division = 100/tasksReq;
-    //let result = division*tasksLeft;
-    //console.log('the result is', result);
-    //const setMathResult = result;
-    //return(
-      //mathResult
-    //)
-  }
-
+  const getValue = (event, {value}) => {
+    let bird_name = event.target.textContent;
+    console.log(bird_name);
+    
+}
+  
+ 
+  
 
   return (
     <div className="App">
       <div className="AssigningTask">
         <Input placeholder='Your Name' onChange={(event)=> {setBossName(event.target.value)}}/>
         <Input placeholder='Assign Task...' onChange={(event)=> {setBossInput(event.target.value)}}/>
+        <div style={{marginLeft: 350, marginTop: 10, marginBottom:10}}>
+          <Menu compact>
+            <Dropdown text='Priority' options={options} simple item onChange={(event)=> {setPriority(event.target.textContent)}}/>
+          </Menu> 
+        </div>
         <Button content='Submit' primary onClick={addBossTask}/>
         <Button content='Show All' secondary onClick={showBossTask} />
+        
+        
         {BossInputsList.map((val,key)=>{
           return(
-            <div className="showBossTasks">
+            <div className="showAllTasks">
               <h1>By: {val.bossName}</h1>
               <p1>{val.bossTask}</p1>
             </div>
@@ -110,10 +118,15 @@ function App() {
         <Button content='Show All' onClick={showEmployeeTask}secondary /> 
         {EmployeeInputsList.map((val,key)=>{
           return(
-            <div className="showBossTasks">
+            <div className="showAllTasks">
               <h1>By: {val.employeeName}</h1>
               <p1>{val.employeeTask}</p1>
-              <p1>{calculate(val.tasksReq, val.tasksLeft)}</p1>
+              <br></br>
+              <br></br>
+              <div className="percentageCompleted">
+                <p2>Percentage Completed: </p2>
+                <p2>{(100/val.tasksReq)*val.tasksLeft}%</p2>
+              </div>
             </div>
           )
         })}

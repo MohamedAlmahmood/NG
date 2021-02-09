@@ -23,9 +23,12 @@ app.listen(3001, ()=>{
 app.post('/addBossTask', (req, res)=>{
     const BossName = req.body.BossName;
     const BossInput = req.body.BossInput;
+    console.log(BossInput)
+    const Priority = req.body.Priority;
+    console.log(Priority)
     db.query(
-        "INSERT INTO tasks.bosstable (bossName, bossTask) VALUES (?,?)", 
-        [BossName, BossInput],
+        "INSERT INTO tasks.bosstable (bossName, bossTask, priority) VALUES (?,?,?)", 
+        [BossName, BossInput, Priority],
         (err, result)=>{
             if (err){
                 console.log(err)
