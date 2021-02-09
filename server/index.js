@@ -23,9 +23,7 @@ app.listen(3001, ()=>{
 app.post('/addBossTask', (req, res)=>{
     const BossName = req.body.BossName;
     const BossInput = req.body.BossInput;
-    console.log(BossInput)
     const Priority = req.body.Priority;
-    console.log(Priority)
     db.query(
         "INSERT INTO tasks.bosstable (bossName, bossTask, priority) VALUES (?,?,?)", 
         [BossName, BossInput, Priority],
@@ -78,4 +76,15 @@ app.get('/showEmployeeTasks', (req,res)=>{
             }
         }
     )
+})
+
+app.delete('/deleteboss/:id', (req, res)=>{
+    const id = req.params.id //get the id from the parameters
+    db.query("DELETE FROM tasks.bosstable WHERE taskID=?", id, (err, results)=>{
+         if(err){
+             console.log(err);
+         }else{
+            res.send(results)
+         }
+    })
 })

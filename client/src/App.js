@@ -34,6 +34,7 @@ function App() {
       setBossInputsList([...BossInputsList, {
         bossName: BossName,
         bossTask: BossInput,
+        priority: Priority,
       }])
     })
   }
@@ -66,20 +67,20 @@ function App() {
     })
   }
 
+  const deleteBossTask = (id)=>{
+    Axios.delete(`http://localhost:3001/deleteboss/${id}`).then((response)=>{
+      setBossInputsList(BossInputsList.filter((val)=>{
+        return val.taskID!=id //show all the rows of the array where id is not the same as the id we are passing in the method. 
+      }))
+    });
+  }
+
   const options = [
     { key: 1, text: 'Low', value: 'low' },
     { key: 2, text: 'Medium', value: 'medium' },
     { key: 3, text: 'High', value: 'high' },
   ]
 
-  const getValue = (event, {value}) => {
-    let bird_name = event.target.textContent;
-    console.log(bird_name);
-    
-}
-  
- 
-  
 
   return (
     <div className="App">
@@ -100,7 +101,13 @@ function App() {
             <div className="showAllTasks">
               <h1>By: {val.bossName}</h1>
               <p1>{val.bossTask}</p1>
-            </div>
+              <div style={{marginLeft: 600}}>
+                <p2>Priority: {val.priority}</p2>
+              </div>
+              <div>
+                <Button negative onClick={()=> {deleteBossTask(val.taskID)}}> Delete </Button>
+              </div>
+            </div> 
           )
         })}
       </div>
