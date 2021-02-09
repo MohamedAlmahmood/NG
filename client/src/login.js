@@ -4,31 +4,27 @@ import myImage from './logo.png';
 import {useState} from "react";
 import Axios from 'axios';
 import {NavLink, Switch, Route, withRouter} from "react-router-dom";
+import { render } from 'react-dom';
 
 
 const Login = (props) => {
     const [Username, setUsername] = useState("");
     const [Password, setPassword] = useState("");
-    const [redirect, setRedirect] = useState(0);
-    const [authUsername, setauthUsername] = useState("");
-    const [authPassword, setauthPassword] = useState("");
 
     const checkUserName = ()=>{
-        
         Axios.post('http://localhost:3001/checkUserName', {
         Username: Username,
-        Password: Password, })
+        Password: Password, 
+    })
         .then(res => {
-          console.log(res.data);
           if(res.data==1){
            props.history.push("/Home");
-           setauthUsername(Username);
-           setauthPassword(Password);
           }else {
               alert("Wrong Password");
           }
         })
     }
+
 
 
     return(
