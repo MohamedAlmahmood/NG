@@ -88,3 +88,34 @@ app.delete('/deleteboss/:id', (req, res)=>{
          }
     })
 })
+
+app.delete('/deleteemployee/:id', (req, res)=>{
+    const id = req.params.id //get the id from the parameters
+    db.query("DELETE FROM tasks.employeetable WHERE taskID=?", id, (err, results)=>{
+         if(err){
+             console.log(err);
+         }else{
+            res.send(results)
+         }
+    })
+})
+
+app.post('/checkUserName', (req,res)=>{
+    const username = req.body.Username;
+    const password = req.body.Password;
+    db.query("SELECT username, password FROM tasks.users WHERE username=? AND password=?",[username, password] , (err, results)=>{
+        if(err){
+            console.log(err);
+        }else{
+            console.log(results)
+            console.log(results.length)
+            if(results.length>0){
+                res.send('1');
+                
+            }else{
+                res.send('0');
+            }
+            
+        }
+   })
+})

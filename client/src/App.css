@@ -1,6 +1,9 @@
 .App {
   justify-content: center;
 }
+.Home{
+    justify-content: center;
+}
 
 .AssigningTask {
   display: flex;
@@ -61,3 +64,12 @@ input[type="text"]{
     font-style: italic;
     font-weight: 600;
   }
+
+  .registration, .login {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  
