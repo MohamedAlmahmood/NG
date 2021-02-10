@@ -1,15 +1,20 @@
 import './App.css';
 import {useState} from "react";
 import Axios from 'axios';
+import myImage from './logo.png';
 import { 
   Input, 
   Button,
   Dropdown,
   Menu,
+  Form,
+  TextArea,
+  Image,
+  Label,
 } from 'semantic-ui-react'
 
 
-function Home() {
+const Home=(props)=> {
   const [BossName, setBossName] = useState("");
   const [EmployeeName, setEmployeeName] =useState("");
 
@@ -23,8 +28,8 @@ function Home() {
   const [EmployeeInputsList, setEmployeeInputsList] = useState([]);
 
   const [Priority, setPriority] = useState("");
+  const [Status, setStatus] = useState("");
   
-
   const addBossTask = ()=>{
     Axios.post('http://localhost:3001/addBossTask', {
       BossName: BossName,
@@ -88,64 +93,114 @@ function Home() {
     { key: 2, text: 'Medium', value: 'medium' },
     { key: 3, text: 'High', value: 'high' },
   ]
+  const statusOptions = [
+    { key: 1, text: 'Pending', value: 'Pending' },
+    { key: 2, text: 'In progress', value: 'In progress' },
+    { key: 3, text: 'Completed', value: 'Completed' },
+  ]
+
+  const changeStatus = (id)=>{
+    Axios.put('http://localhost:3001/changeStatus', {
+      id: id,
+      Status: Status,
+    }).then((response)=>{
+      alert('Please Refresh page to see the changes')
+      // setBossInputsList(
+      //   BossInputsList.map((val)=>{
+      //     //go through the database, if its the same employee using the id then keep everything the same but change the salary
+      //     //else 
+      //     return val.taskID==id ? {
+      //       id: val.taskID,
+      //       BossName: val.bossName, 
+      //       BossInput: val.bossTask, 
+      //       Priority: val.priority, 
+      //       Status: Status
+      //     }: val //else, keep the database the same
+      //   })
+      // )
+    })
+  }
 
 
   return (
     <div className="App">
+      <Image src={myImage} style={{width:'130px', height:'140px'}}/>
       <div className="AssigningTask">
         <Input placeholder='Your Name' onChange={(event)=> {setBossName(event.target.value)}}/>
-        <Input placeholder='Assign Task...' onChange={(event)=> {setBossInput(event.target.value)}}/>
+        <Form>
+          <TextArea style={{fontSize: 25}} placeholder='Assign Task...' onChange={(event)=> {setBossInput(event.target.value)}}/>
+        </Form>
         <div style={{marginLeft: 350, marginTop: 10, marginBottom:10}}>
           <Menu compact>
             <Dropdown text='Priority' options={options} simple item onChange={(event)=> {setPriority(event.target.textContent)}}/>
           </Menu> 
         </div>
-        <Button content='Submit' primary onClick={addBossTask}/>
+        <Button content='Submit' color='red' onClick={addBossTask}/>
         <Button content='Show All' secondary onClick={showBossTask} />
+
+        <div className="preline">
+          {BossInputsList.map((val,key)=>{
+            return(
+              <div className="showAllTasks">
+                <h1 style={{fontSize: 40}}>{val.bossName}</h1>
+                <p1>{val.bossTask}</p1>
+                <div style={{marginLeft: 600}}>
+                  <p2>Priority: {val.priority}</p2>
+                </div>
+                <div>
+                  <Button negative onClick={()=> {deleteBossTask(val.taskID)}}> Delete </Button>
+                </div>
+                <div style={{marginLeft: 270, }}>
+                  <Menu compact>
+                  <Button content='Submit' color='red' onClick={()=>{
+                    changeStatus(val.taskID)
+                  }}/>
+                    <Dropdown text='Status' options={statusOptions} simple item onChange={(event)=> {setStatus(event.target.textContent)}}/>
+                  </Menu> 
+                  <Label as='a' color='red' tag>
+                    {val.status}
+                  </Label>
+                </div>
+
+              </div>
+            )
+          })}
+        </div>
         
         
-        {BossInputsList.map((val,key)=>{
-          return(
-            <div className="showAllTasks">
-              <h1>By: {val.bossName}</h1>
-              <p1>{val.bossTask}</p1>
-              <div style={{marginLeft: 600}}>
-                <p2>Priority: {val.priority}</p2>
-              </div>
-              <div>
-                <Button negative onClick={()=> {deleteBossTask(val.taskID)}}> Delete </Button>
-              </div>
-            </div>
-          )
-        })}
       </div>
 
       <hr/>
 
       <div className="responseTask">
         <Input placeholder='Your Name' onChange={(event)=> {setEmployeeName(event.target.value)}}/>
-        <Input placeholder='What tasks did you complete today?' onChange={ (event)=> {setEmployeeInput(event.target.value) }}/>
+       <Form>
+          <TextArea style={{fontSize: 25}} placeholder='Tasks Completed...' onChange={(event)=> {setEmployeeInput(event.target.value)}}/>
+        </Form>
         <div className="tasksInput">
           <Input placeholder='Tasks Required' onChange={ (event)=> {setEmployeeTasksRequired(event.target.value)} }/>
           <Input placeholder='Tasks Completed' onChange={ (event)=> {setEmployeeTasksCompleted(event.target.value)} }/>
         </div>
-        <Button content='Submit' primary onClick={addEmployeeTask}/>
+        <Button content='Submit' color='red' onClick={addEmployeeTask}/>
         <Button content='Show All' onClick={showEmployeeTask}secondary /> 
-        {EmployeeInputsList.map((val,key)=>{
-          return(
-            <div className="showAllTasks">
-              <h1>By: {val.employeeName}</h1>
-              <p1>{val.employeeTask}</p1>
-              <br></br>
-              <br></br>
-              <div className="percentageCompleted">
-                <p2>Percentage Completed: </p2>
-                <p2>{(100/val.tasksReq)*val.tasksLeft}%</p2>
+        <div className="preline">
+          {EmployeeInputsList.map((val,key)=>{
+            return(
+              <div className="showAllTasks">
+                <h1 style={{fontSize: 40}}>{val.employeeName}</h1>
+                <p1>{val.employeeTask}</p1>
+                <br></br>
+                <br></br>
+                <div className="percentageCompleted">
+                  <p2>Percentage Completed: </p2>
+                  <p2>{(100/val.tasksReq)*val.tasksLeft}%</p2>
+                </div>
+                <Button negative onClick={()=> {deleteEmployeeTask(val.taskID)}}> Delete </Button>
               </div>
-              <Button negative onClick={()=> {deleteEmployeeTask(val.taskID)}}> Delete </Button>
-            </div>
-          )
-        })}
+            )
+          })}
+        </div>
+        
       </div>
 
     </div>

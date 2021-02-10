@@ -18,7 +18,10 @@ const Login = (props) => {
     })
         .then(res => {
           if(res.data==1){
-           props.history.push("/Home");
+           props.history.push({
+               pathname: '/Home',
+               state: {Username: Username, Password: Password}
+            });
           }else {
               alert("Wrong Password");
           }

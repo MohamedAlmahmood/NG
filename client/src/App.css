@@ -72,4 +72,7 @@ input[type="text"]{
     align-items: center;
   }
 
-  
+  .preline {
+    white-space: pre-line;
+    line-height: 1.5;
+  }

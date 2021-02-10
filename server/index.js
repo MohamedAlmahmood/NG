@@ -25,14 +25,31 @@ app.post('/addBossTask', (req, res)=>{
     const BossName = req.body.BossName;
     const BossInput = req.body.BossInput;
     const Priority = req.body.Priority;
+    const Status = req.body.Status;
     db.query(
         "INSERT INTO tasks.bosstable (bossName, bossTask, priority) VALUES (?,?,?)", 
-        [BossName, BossInput, Priority],
+        [BossName, BossInput, Priority, Status],
         (err, result)=>{
             if (err){
                 console.log(err)
             }else{
                 res.send("values inserted")}
+        }
+    )
+})
+
+app.put('/changeStatus', (req, res)=>{
+    const id = req.body.id;
+    const Status = req.body.Status;
+    console.log(Status);
+    db.query(
+        "UPDATE tasks.bosstable SET status=? WHERE taskID=?",
+        [Status, id],
+        (err, result)=>{
+            if (err){
+                console.log(err)
+            }else{
+                res.send("Status updated")}
         }
     )
 })
