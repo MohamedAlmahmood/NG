@@ -28,7 +28,7 @@ const Home=(props)=> {
   const [EmployeeInputsList, setEmployeeInputsList] = useState([]);
 
   const [Priority, setPriority] = useState("");
-  const [Status, setStatus] = useState("");
+  const [Status, setStatus] = useState("Pending");
   
   const addBossTask = ()=>{
     Axios.post('http://localhost:3001/addBossTask', {
@@ -40,6 +40,7 @@ const Home=(props)=> {
         bossName: BossName,
         bossTask: BossInput,
         priority: Priority,
+        status: Status,
       }])
     })
   }
@@ -104,20 +105,20 @@ const Home=(props)=> {
       id: id,
       Status: Status,
     }).then((response)=>{
-      alert('Please Refresh page to see the changes')
-      // setBossInputsList(
-      //   BossInputsList.map((val)=>{
-      //     //go through the database, if its the same employee using the id then keep everything the same but change the salary
-      //     //else 
-      //     return val.taskID==id ? {
-      //       id: val.taskID,
-      //       BossName: val.bossName, 
-      //       BossInput: val.bossTask, 
-      //       Priority: val.priority, 
-      //       Status: Status
-      //     }: val //else, keep the database the same
-      //   })
-      // )
+      alert('Status Updated!')
+      setBossInputsList(
+        BossInputsList.map((val)=>{
+          //go through the database, if its the same employee using the id then keep everything the same but change the salary
+          //else 
+          return val.taskID==id ? {
+            id: val.taskID,
+            bossName: val.bossName,
+            bossTask: val.bossTask,
+            priority: val.priority,
+            status: Status,
+          }: val //else, keep the database the same
+        })
+      )
     })
   }
 
@@ -142,15 +143,18 @@ const Home=(props)=> {
           {BossInputsList.map((val,key)=>{
             return(
               <div className="showAllTasks">
+              <div style={{float: 'right'}}>
+                  <Label key='massive' size='massive'>
+                    {val.priority}
+                  </Label>
+                </div>
                 <h1 style={{fontSize: 40}}>{val.bossName}</h1>
                 <p1>{val.bossTask}</p1>
-                <div style={{marginLeft: 600}}>
-                  <p2>Priority: {val.priority}</p2>
-                </div>
-                <div>
+          
+                <div style={{marginTop: 30}}>
                   <Button negative onClick={()=> {deleteBossTask(val.taskID)}}> Delete </Button>
                 </div>
-                <div style={{marginLeft: 270, }}>
+                <div style={{marginLeft: 250}}>
                   <Menu compact>
                   <Button content='Submit' color='red' onClick={()=>{
                     changeStatus(val.taskID)
@@ -195,8 +199,11 @@ const Home=(props)=> {
                   <p2>Percentage Completed: </p2>
                   <p2>{(100/val.tasksReq)*val.tasksLeft}%</p2>
                 </div>
-                <Button negative onClick={()=> {deleteEmployeeTask(val.taskID)}}> Delete </Button>
+                <div>
+                  <Button negative onClick={()=> {deleteEmployeeTask(val.taskID)}}> Delete </Button>
+                </div>
               </div>
+              
             )
           })}
         </div>
